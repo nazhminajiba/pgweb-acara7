@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>DIY</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+        <style>
+            h2 {
+                margin-top: 10;
+                text-align: center;
+                font-size: 15;
+            }
+        </style>
+</head>
+
+<body>
+    <h2>Daerah Istimewa Yogyakarta</h2>
+    <div id="map" style="height: 600px; margin-top: 20px; margin-bottom: 20px; margin-left: 5px; margin-right: 15px;">
+    </div>
+
+    <!-- Pastikan Anda meletakkan ini SETELAH Leaflet CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        var map = L.map("map").setView([-6.89662, 109.67787], 12);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 30,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Menambahkan layer tile (OpenStreetMap)
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        // Menambahkan marker
+        var locations = [
+            { coords: [-7.71556, 110.35556], name: "Sleman" },
+            { coords: [-7.88806, 110.32889], name: "Bantul" },
+            { coords: [-7.955774, 110.600883], name: "Gunungkidul" },
+            { coords: [-7.797068, 110.370529], name: "Yogyakarta" },
+            { coords: [-7.86666659, 110.1791475], name: "Kulonprogo" },
+            { coords: [-7.540718, 110.445724], name: "GunungMerapi" },
+            { coords: [-7.45421, 110.43967], name: "GunungMerbabu" }
+        ];
+
+        // Loop through the array and add markers to the map
+        locations.forEach(function (location) {
+            var marker = L.marker(location.coords).addTo(map);
+            marker.bindPopup(location.name).openPopup();
+        });
+
+        // Menambahkan lingkaran
+        var circleCoordinates = [
+            [-7.540718, 110.445724],
+            [-7.45421, 110.43967]
+        ];
+        var circleRadiuses = [8000, 8000];
+        var circleColors = ['red', 'red'];
+        for (var i = 0; i < circleCoordinates.length; i++) {
+            var circle = L.circle(circleCoordinates[i], {
+                color: circleColors[i],
+                fillColor: circleColors[i],
+                fillOpacity: 0.5,
+                radius: circleRadiuses[i]
+            }).addTo(map);
+            circle.bindPopup("Zona Merah.");
+        }
+
+        var polygons = [
+            {
+                coordinates: [
+                    [-7.803034, 110.363674],
+                    [-7.80331, 110.36552],
+                    [-7.805096, 110.365305],
+                    [-7.805011, 110.363374]
+                ],
+                color: 'Yellow',
+                fillColor: 'Yellow',
+                fillOpacity: 0.5,
+                popupContent: 'Alun-Alun Lor'
+            },
+            {
+                coordinates: [
+                    [-7.811281, 110.362837],
+                    [-7.811462, 110.363846],
+                    [-7.812536, 110.363663],
+                    [-7.812312, 110.362623]
+                ],
+                color: 'white',
+                fillColor: 'white',
+                fillOpacity: 0.5,
+                popupContent: 'Alun-Alun Kidul'
+            }
+        ];
+
+        polygons.forEach(function (polygonData) {
+            var polygon = L.polygon(polygonData.coordinates, {
+                color: polygonData.color,
+                fillColor: polygonData.fillColor,
+                fillOpacity: polygonData.fillOpacity
+            }).addTo(map);
+
+            // Menambahkan pop-up informasi
+            polygon.bindPopup(polygonData.popupContent);
+        });
+
+
+        // Mengelola klik pada peta
+        var popup = L.popup();
+        function onMapClick(e) {
+            popup
+                .setLatLng(e.latlng)
+                .setContent("Koordinat " + e.latlng.toString())
+                .openOn(map);
+        }
+        map.on('click', onMapClick);
+    </script>
+</body>
+
+</html>
